@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build-api:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore Packages
+      run: dotnet restore StudentApi/StudentApi.csproj
+
+    - name: Build API
+      run: dotnet build StudentApi/StudentApi.csproj --configuration Release --no-restore
+
+  build-angular:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - name: Install Packages
+      run: |
+        cd StudentUI
+        npm install
+
+    - name: Build Angular
+      run: |
+        cd StudentUI
+        npm run build
