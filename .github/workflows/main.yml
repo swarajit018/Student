@@ -8,6 +8,7 @@ on:
 jobs:
 
   build-api:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -20,13 +21,23 @@ jobs:
       with:
         dotnet-version: '9.0.x'
 
-    - name: Restore Packages
+    - name: Restore
       run: dotnet restore StudentApi/StudentApi.csproj
 
-    - name: Build API
+    - name: Build
       run: dotnet build StudentApi/StudentApi.csproj --configuration Release --no-restore
 
+    - name: Publish API
+      run: dotnet publish StudentApi/StudentApi.csproj -c Release -o publish
+
+    - name: Upload API Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: StudentApi
+        path: publish/
+
   build-angular:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -48,3 +59,9 @@ jobs:
       run: |
         cd StudentUI
         npm run build
+
+    - name: Upload Angular Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: StudentUI
+        path: StudentUI/dist/
